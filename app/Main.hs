@@ -22,4 +22,6 @@ solnFunc = \case
   (1, True)  -> day01b
   (2, False) -> day02a
   (2, True)  -> day02b
+  (3, False) -> day03a
+  (3, True)  -> day03b
   _ -> error "WIP"
