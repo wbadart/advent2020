@@ -14,14 +14,12 @@ instance ParseRecord Solution
 main :: IO ()
 main = do
   Solution day secondProb <- getRecord "WB Advent of Code"
-  interact $ show . solnFunc (day, secondProb) . lines
+  interact $ show . ((if secondProb then snd else fst) (solnFunc day)) . lines
 
-solnFunc :: (Int, Bool) -> ([String] -> Int)
+solnFunc :: Int -> ([String] -> Int, [String] -> Int)
 solnFunc = \case
-  (1, False) -> day01a
-  (1, True)  -> day01b
-  (2, False) -> day02a
-  (2, True)  -> day02b
-  (3, False) -> day03a
-  (3, True)  -> day03b
+  1 -> (day01a, day01b)
+  2 -> (day02a, day02b)
+  3 -> (day03a, day03b)
+  4 -> (day04a, error "WIP")
   _ -> error "WIP"
