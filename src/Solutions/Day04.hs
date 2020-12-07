@@ -41,11 +41,11 @@ valid (filter ((/= "cid") . fst) -> fs) =
 
 fields :: Map String (String -> Bool)
 fields = (maybe False id .) <$> M.fromList
-  [ ("byr", fmap (between 1920 2002) . readMaybe)
-  , ("iyr", fmap (between 2010 2020) . readMaybe)
-  , ("eyr", fmap (between 2020 2030) . readMaybe)
+  [ ("byr", readMaybe .> between 1920 2002)
+  , ("iyr", readMaybe .> between 2010 2020)
+  , ("eyr", readMaybe .> between 2020 2030)
   , ("hgt", break isAlpha >>> (readMaybe *** checkHeight) >>> uncurry (>>=))
-  , ("hcl", uncurry (liftA2 (&&)) . ((fmap (== '#') . listToMaybe) &&& (fmap (all isHexDigit) . tailMay)))
+  , ("hcl", uncurry (liftA2 (&&)) . ((listToMaybe .> (== '#')) &&& (tailMay .> all isHexDigit)))
   , ("ecl", pure . (`elem` eyeColors))
   , ("pid", pure . ((&&) <$> ((== 9) . length) <*> all isDigit))
   ]
@@ -58,5 +58,6 @@ fields = (maybe False id .) <$> M.fromList
     eyeColors = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
     tailMay = \case [] -> Nothing; (_:xs) -> Just xs
     (...) = (.) . (.)
+    m .> f = fmap f . m
 
 trace' x = trace (show x) x
