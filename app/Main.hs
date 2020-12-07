@@ -21,5 +21,5 @@ solnFunc = \case
   1 -> (day01a, day01b)
   2 -> (day02a, day02b)
   3 -> (day03a, day03b)
-  4 -> (day04a, error "WIP")
+  4 -> (day04a, day04b)
   _ -> error "WIP"
