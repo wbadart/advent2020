@@ -13,8 +13,6 @@ import qualified Data.Map.Strict as M
 import Data.Maybe ( listToMaybe )
 import Text.Read ( readMaybe )
 
-import Debug.Trace
-
 day04a :: [String] -> Int
 day04a = solve (const True)
 
@@ -22,7 +20,7 @@ day04b :: [String] -> Int
 day04b = solve and
 
 solve :: ([Bool] -> Bool) -> [String] -> Int
-solve f = length . filter id . map (maybe False f . trace' . valid . trace' . toPassport) . breakAll ""
+solve f = length . filter id . map (maybe False f . valid . toPassport) . breakAll ""
   where
     toPassport = map (split ':') . concatMap (breakAll ' ')
     breakAll :: Eq a => a -> [a] -> [[a]]
@@ -59,5 +57,3 @@ fields = (maybe False id .) <$> M.fromList
     tailMay = \case [] -> Nothing; (_:xs) -> Just xs
     (...) = (.) . (.)
     m .> f = fmap f . m
-
-trace' x = trace (show x) x
