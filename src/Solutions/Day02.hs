@@ -23,7 +23,7 @@ valid (Entry (lo, hi) char password) =
 
 valid' :: Entry -> Bool
 valid' (Entry (lo, hi) char password) =
-  maybe False id do
+  fromMaybe False do
     lo' <- password !!? (lo - 1)
     hi' <- password !!? (hi - 1)
     return (xor (lo' == char) (hi' == char))
@@ -33,7 +33,7 @@ parse
   (break (== ':') ->
     ( break (== ' ') ->
       ( break (== '-') -> (lo, '-':hi)
-      , ' ':letter:[]
+      , [' ', letter]
       )
     , ':':' ':password
     )

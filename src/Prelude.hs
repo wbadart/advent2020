@@ -11,7 +11,7 @@ module Prelude
     , split
     ) where
 
-import System.IO ( hGetContents )
+import System.IO ( getContents )
 
 import Relude
 import Relude.Extra
@@ -29,7 +29,7 @@ infixr 5 .>
 
 interact :: (Text -> Text) -> IO ()
 interact f = do
-  blob <- hGetContents stdin
+  blob <- getContents
   putTextLn $! f (toText $! blob)
 
 breakAll :: Eq a => a -> [a] -> [[a]]

@@ -26,7 +26,7 @@ valid (filter ((/= "cid") . fst) -> fs) =
   traverse (uncurry (<*>) . ((fields M.!?) *** pure)) fs <* traverse (`Data.List.lookup` fs) (M.keys fields)
 
 fields :: Map String (String -> Bool)
-fields = (maybe False id .) <$> M.fromList
+fields = (fromMaybe False .) <$> M.fromList
   [ ("byr", readMaybe .> between 1920 2002)
   , ("iyr", readMaybe .> between 2010 2020)
   , ("eyr", readMaybe .> between 2020 2030)
