@@ -17,6 +17,7 @@ main = do
         , (05,       858,           557)
         , (06,     7_110,         3_628)
         , (07,       246,         2_976)
+        , (08,     1_200,     undefined)
         ]
   input <- inputs (length tests)
   defaultMain $ testGroup "Advent of Code" (testDay input <$> tests)
@@ -30,8 +31,7 @@ inputs upto = do
 testDay :: (Int -> Maybe (NonEmpty String)) -> (Int, Int, Int) -> TestTree
 testDay input (i, solnA, solnB) = testGroup (printf "Day %02d" i)
   let (implA, implB) = solnFunc i
-      testInput = input (i - 1)
-      notFound = assertBool "input file not found" False
-   in [ testCase (printf "day%02da" i) $ maybe notFound (\in_ -> implA in_ @?= Right solnA) testInput
-      , testCase (printf "day%02db" i) $ maybe notFound (\in_ -> implB in_ @?= Right solnB) testInput
-      ]
+      in_ = input (i - 1)
+      missing = assertBool "input file not found" False
+      case_ fmt impl soln = testCase (printf fmt i) $ maybe missing ((@?= Right soln) . impl) in_
+   in [ case_ "day%02da" implA solnA, case_ "day%02db" implB solnB ]

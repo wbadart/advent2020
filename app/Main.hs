@@ -19,4 +19,4 @@ main = do
     |> map toString
     |> nonEmpty
     |> (maybeToRight "empty input" >=> (bool fst snd secondProb $ solnFunc day))
-    |> either toText show
+    |> either (toText . ("ERROR " <>)) show

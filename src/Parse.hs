@@ -40,6 +40,9 @@ digit = digitToInt <$> satisfying isDigit
 number :: Parser String Int
 number = read <$> some (satisfying isDigit)
 
+signedNumber :: Parser String Int
+signedNumber = (char '+' *> number) <|> (negate <$> (char '-' *> number))
+
 string :: String -> Parser String String
 string = \case
   "" -> pure ""
