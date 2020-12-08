@@ -16,6 +16,7 @@ main = do
         , (04,       254,           184)
         , (05,       858,           557)
         , (06,     7_110,         3_628)
+        , (07,       246,         2_976)
         ]
   input <- inputs (length tests)
   defaultMain $ testGroup "Advent of Code" (testDay input <$> tests)
