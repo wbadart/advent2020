@@ -1,6 +1,9 @@
 {-# LANGUAGE OverloadedStrings,ViewPatterns #-}
 
-module Solutions.Day05 where
+module Solutions.Day05
+  ( day05a
+  , day05b
+  ) where
 
 import Control.Arrow ( (***) )
 
@@ -10,8 +13,11 @@ day05a = traverse seatId .> maximum1 >>> maybeToRight "bad parse"
 day05b :: NonEmpty String -> Either String Int
 day05b xs = do
   ids <- maybeToRight "bad parse" (traverse seatId xs >>= nonEmpty . sort . toList)
-  let foo = evalState (traverse go ids) (prev (head ids))
-  maybeToRight "no solution" $ viaNonEmpty (prev . head) $ fmap fst $ filter snd $ zip (toList ids) (toList foo)
+  let inConcecutive = evalState (traverse go ids) (prev (head ids))
+  maybeToRight "no solution"
+    $ viaNonEmpty (prev . head)
+    $ fmap fst $ filter snd
+    $ zip (toList ids) (toList inConcecutive)
 
 go :: (Eq a, Enum a) => a -> State a Bool
 go a = state \(succ -> a') -> (a /= a', a)
