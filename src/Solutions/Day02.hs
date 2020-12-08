@@ -5,13 +5,16 @@ module Solutions.Day02
   , day02b
   ) where
 
-day02a :: [String] -> Int
-day02a = length . filter valid . mapMaybe parse
+day02a :: NonEmpty String -> Either String Int
+day02a = solve valid
 
-day02b :: [String] -> Int
-day02b = length . filter valid' . mapMaybe parse
+day02b :: NonEmpty String -> Either String Int
+day02b = solve valid'
 
 data Entry = Entry (Int, Int) Char String deriving Show
+
+solve :: (Entry -> Bool) -> NonEmpty String -> Either String Int
+solve p = traverse parse |> maybeToRight "bad parse" .> toList |> filter p |> length
 
 valid :: Entry -> Bool
 valid (Entry (lo, hi) char password) =

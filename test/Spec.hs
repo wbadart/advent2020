@@ -18,17 +18,17 @@ main = do
   input <- inputs (length tests)
   defaultMain $ testGroup "Advent of Code" (testDay input <$> tests)
 
-inputs :: Int -> IO (Int -> Maybe [String])
+inputs :: Int -> IO (Int -> Maybe (NonEmpty String))
 inputs upto = do
   blobs <- traverse (readFile . printf "test/inputs/day%02d.txt") [1 :: Int .. upto]
   let inputLines = map (map toString . lines . toText) blobs
-  pure (inputLines !!?)
+  pure ((inputLines !!?) >=> nonEmpty)
 
-testDay :: (Int -> Maybe [String]) -> (Int, Int, Int) -> TestTree
+testDay :: (Int -> Maybe (NonEmpty String)) -> (Int, Int, Int) -> TestTree
 testDay input (i, solnA, solnB) = testGroup (printf "Day %02d" i)
   let (implA, implB) = solnFunc i
       testInput = input (i - 1)
       notFound = assertBool "input file not found" False
-   in [ testCase (printf "day%02da" i) $ maybe notFound (\in_ -> implA in_ @?= solnA) testInput
-      , testCase (printf "day%02db" i) $ maybe notFound (\in_ -> implB in_ @?= solnB) testInput
+   in [ testCase (printf "day%02da" i) $ maybe notFound (\in_ -> implA in_ @?= Right solnA) testInput
+      , testCase (printf "day%02db" i) $ maybe notFound (\in_ -> implB in_ @?= Right solnB) testInput
       ]

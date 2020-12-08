@@ -10,11 +10,11 @@ import Data.Char ( isAlpha, isDigit, isHexDigit )
 import Data.List ( lookup )
 import qualified Data.Map.Strict as M
 
-day04a :: [String] -> Int
-day04a = solve (const True)
+day04a :: NonEmpty String -> Either String Int
+day04a = Right . solve (const True) . toList
 
-day04b :: [String] -> Int
-day04b = solve and
+day04b :: NonEmpty String -> Either String Int
+day04b = Right . solve and . toList
 
 solve :: ([Bool] -> Bool) -> [String] -> Int
 solve f = length . filter id . map (maybe False f . valid . toPassport) . breakAll ""

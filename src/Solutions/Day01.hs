@@ -1,35 +1,30 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings,ViewPatterns #-}
 
 module Solutions.Day01
-  -- ( day01a
-  -- , day01b
-  -- ) where
-where
+  ( day01a
+  , day01b
+  ) where
 
 import qualified Data.Set as S
 
-day01a :: [String] -> Int
-day01a = uncurry (*) . maybe (0, 0) run . traverse readMaybe
+day01a :: NonEmpty String -> Either String Int
+day01a xs = do 
+    ints <- maybeToRight "bad parse" (traverse readMaybe xs)
+    uncurry (*) <$> run ints
 
-day01b :: [String] -> Int
-day01b = maybe 0 (\(i, j, k) -> i * j * k) . viaNonEmpty head . maybe [] run' . traverse readMaybe
+day01b :: NonEmpty String -> Either String Int
+day01b (toList -> xs) = do
+  ints <- maybeToRight "bad parse" (traverse readMaybe xs)
+  maybeToRight "no solution" $
+    viaNonEmpty head [i * j * k | i <- ints, j <- ints, let k = 2020 - (i + j), k `elem` ints]
 
-run :: [Int] -> (Int, Int)
-run = either id (error "wat") . flip (evalStateT . traverse (go 2020)) S.empty
-
-run' :: [Int] -> [(Int, Int, Int)]
-run' xs = do
-  i <- xs
-  j <- xs
-  let k = 2020 - (i + j)
-  if k `elem` xs
-     then return (i, j, k)
-     else []
-
-go :: Int -> Int -> StateT (Set Int) (Either (Int, Int)) ()
-go sumTo i = do
-  let j = sumTo - i
-  cache <- get
-  lift (if j `S.member` cache then Left (i, j) else Right ())
-  modify (S.insert i)
-  return ()
+run :: NonEmpty Int -> Either String (Int, Int)
+run = either Right (const $ Left "no solution") . flip (evalStateT . traverse go) S.empty
+  where
+    go :: Int -> StateT (Set Int) (Either (Int, Int)) ()
+    go i = do
+      let j = 2020 - i
+      cache <- get
+      lift (if j `S.member` cache then Left (i, j) else Right ())
+      modify (S.insert i)
+      return ()
