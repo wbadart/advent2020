@@ -20,15 +20,6 @@ solve :: ([Bool] -> Bool) -> [String] -> Int
 solve f = length . filter id . map (maybe False f . valid . toPassport) . breakAll ""
   where
     toPassport = map (split ':') . concatMap (breakAll ' ')
-    breakAll :: Eq a => a -> [a] -> [[a]]
-    breakAll d = \case
-      [] -> []
-      (split d -> (l, r)) -> if null r then [l] else l : breakAll d r
-    split :: Eq a => a -> [a] -> ([a], [a])
-    split d (break (== d) -> (l, r)) =
-      case r of
-        d':r' -> (l, if d == d' then r' else r)
-        _     -> (l, r)
 
 valid :: [(String, String)] -> Maybe [Bool]
 valid (filter ((/= "cid") . fst) -> fs) =
