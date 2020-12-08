@@ -5,19 +5,13 @@ module Solutions.Day02
   , day02b
   ) where
 
-import Data.Function
-
-data Entry = Entry
-  { range :: (Int, Int)
-  , char :: Char
-  , password :: String
-  } deriving Show
-
 day02a :: [String] -> Int
-day02a = length . filter valid . map parse
+day02a = length . filter valid . mapMaybe parse
 
 day02b :: [String] -> Int
-day02b = length . filter valid' . map parse
+day02b = length . filter valid' . mapMaybe parse
+
+data Entry = Entry (Int, Int) Char String deriving Show
 
 valid :: Entry -> Bool
 valid (Entry (lo, hi) char password) =
@@ -26,13 +20,12 @@ valid (Entry (lo, hi) char password) =
 
 valid' :: Entry -> Bool
 valid' (Entry (lo, hi) char password) =
-  let lo' = password !! (lo - 1) == char
-      hi' = password !! (hi - 1) == char
-   in xor lo' hi'
-  where
-    xor p q = (p || q) && not (p && q)
+  maybe False id do
+    lo' <- password !!? (lo - 1)
+    hi' <- password !!? (hi - 1)
+    return (xor (lo' == char) (hi' == char))
 
-parse :: String -> Entry
+parse :: String -> Maybe Entry
 parse
   (break (== ':') ->
     ( break (== ' ') ->
@@ -42,8 +35,5 @@ parse
     , ':':' ':password
     )
   )
-    = Entry (read lo, read hi) letter password
--- parse (break (== ':') -> ((break (== ' ') -> (break (== '-') -> (lo, hi), letter:[]), ':':' ':password)) =
---   let (rangeStr, letter:[]) = break (== ' ') policyStr
---       (lo, hi) = break (== '-') rangeStr
---    in Entry (read lo, read hi) letter password
+    = Entry <$> ((,) <$> readMaybe lo <*> readMaybe hi) <*> pure letter <*> pure password
+parse _ = Nothing

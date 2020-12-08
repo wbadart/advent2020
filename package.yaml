@@ -20,13 +20,19 @@ extra-source-files:
 description:         Please see the README on GitHub at <https://github.com/githubuser/advent#readme>
 
 dependencies:
-- base >= 4.7 && < 5
+- base-noprelude >= 4.7 && < 5
 
 library:
   source-dirs: src
   dependencies:
+  - relude
   - containers
   - transformers
+  ghc-options:
+  - -Wall
+  default-extensions:
+  - BlockArguments
+  - LambdaCase
 
 executables:
   advent-exe:
@@ -50,3 +56,5 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - advent
+    - tasty
+    - tasty-hunit

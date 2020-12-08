@@ -1,4 +1,4 @@
-{-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Solutions.Day01
   -- ( day01a
@@ -6,16 +6,13 @@ module Solutions.Day01
   -- ) where
 where
 
-import Data.Set ( Set )
 import qualified Data.Set as S
-import Control.Monad.Trans.Class
-import Control.Monad.Trans.State.Strict
 
 day01a :: [String] -> Int
-day01a = uncurry (*) . run . map read
+day01a = uncurry (*) . maybe (0, 0) run . traverse readMaybe
 
 day01b :: [String] -> Int
-day01b = (\(i, j, k) -> i * j * k) . head . run' . map read
+day01b = maybe 0 (\(i, j, k) -> i * j * k) . viaNonEmpty head . maybe [] run' . traverse readMaybe
 
 run :: [Int] -> (Int, Int)
 run = either id (error "wat") . flip (evalStateT . traverse (go 2020)) S.empty

@@ -1,17 +1,14 @@
-{-# LANGUAGE LambdaCase,ScopedTypeVariables,ViewPatterns #-}
+{-# LANGUAGE ViewPatterns #-}
 
 module Solutions.Day04
   ( day04a
   , day04b
   ) where
 
-import Control.Applicative ( liftA2 )
-import Control.Arrow ( (&&&), (>>>), (***) )
+import Control.Arrow ( (***) )
 import Data.Char ( isAlpha, isDigit, isHexDigit )
-import Data.Map.Strict ( Map )
+import Data.List ( lookup )
 import qualified Data.Map.Strict as M
-import Data.Maybe ( listToMaybe )
-import Text.Read ( readMaybe )
 
 day04a :: [String] -> Int
 day04a = solve (const True)
@@ -35,7 +32,7 @@ solve f = length . filter id . map (maybe False f . valid . toPassport) . breakA
 
 valid :: [(String, String)] -> Maybe [Bool]
 valid (filter ((/= "cid") . fst) -> fs) =
-  traverse (uncurry (<*>) . ((fields M.!?) *** pure)) fs <* traverse (`lookup` fs) (M.keys fields)
+  traverse (uncurry (<*>) . ((fields M.!?) *** pure)) fs <* traverse (`Data.List.lookup` fs) (M.keys fields)
 
 fields :: Map String (String -> Bool)
 fields = (maybe False id .) <$> M.fromList

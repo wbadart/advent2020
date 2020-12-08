@@ -3,9 +3,6 @@ module Solutions.Day03
   , day03b
   ) where
 
-import Data.Foldable ( foldl' )
-import Data.Maybe ( mapMaybe )
-
 day03a :: [String] -> Int
 day03a = solve 3
 
@@ -18,8 +15,8 @@ day03b ss = product $ fmap ($ ss)
   , solve 1 . mapMaybe (\(i, s) -> if even i then Just s else Nothing) . zip [0..]
   ]
 
-go :: Int -> (Int, Int) -> String -> (Int, Int)
-go right (r, i) s = (r + (if s !! i == '#' then 1 else 0), i + right)
+go :: Int -> (Int, Int) -> String -> Maybe (Int, Int)
+go right (r, i) s = s !!? i >>= \c -> pure (r + (if c == '#' then 1 else 0), i + right)
 
 solve :: Int -> [String] -> Int
-solve right = fst . foldl' (go right) (0, 0) . map cycle
+solve right = maybe 0 fst . foldlM (go right) (0, 0) . map cycle
