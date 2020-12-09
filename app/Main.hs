@@ -16,7 +16,7 @@ main = do
   Solution day secondProb <- getRecord "WB Advent of Code"
   interact
     $ lines
-    |> map toString
-    |> nonEmpty
-    |> (maybeToRight "empty input" >=> (bool fst snd secondProb $ solnFunc day))
-    |> either (toText . ("ERROR " <>)) show
+    >>> map toString
+    >>> nonEmpty
+    >>> (maybeToRight "empty input" >=> (bool fst snd secondProb $ solnFunc day))
+    >>> either (toText . ("ERROR " <>)) show

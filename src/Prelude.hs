@@ -4,7 +4,6 @@ module Prelude
     ( module Relude
     , module Relude.Extra
     , (...)
-    , (|>)
     , (.>)
     , interact
     , breakAll
@@ -18,9 +17,6 @@ import Relude.Extra
 
 (...) :: (c -> d) -> (a -> b -> c) -> a -> b -> d
 (...) = (.) . (.)
-
-(|>) :: (a -> b) -> (b -> c) -> a -> c
-(|>) = (>>>)
 
 (.>) :: Functor f => (a -> f b) -> (b -> c) -> a -> f c
 m .> f = fmap f . m

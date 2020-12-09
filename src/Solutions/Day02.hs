@@ -14,7 +14,7 @@ day02b = solve valid'
 data Entry = Entry (Int, Int) Char String deriving Show
 
 solve :: (Entry -> Bool) -> NonEmpty String -> Either String Int
-solve p = traverse parse |> maybeToRight "bad parse" .> toList |> filter p |> length
+solve p = traverse parse >>> maybeToRight "bad parse" .> (toList >>> filter p >>> length)
 
 valid :: Entry -> Bool
 valid (Entry (lo, hi) char password) =
