@@ -1,6 +1,9 @@
 {-# LANGUAGE FlexibleContexts,OverloadedStrings,ViewPatterns #-}
 
-module Solutions.Day08 where
+module Solutions.Day08
+  ( day08a
+  , day08b
+  ) where
 
 import Relude.Unsafe ( (!!) )
 import Parse
