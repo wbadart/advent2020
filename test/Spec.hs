@@ -33,5 +33,5 @@ testDay input (i, solnA, solnB) = testGroup (printf "Day %02d" i)
   let (implA, implB) = solnFunc i
       in_ = input (i - 1)
       missing = assertBool "input file not found" False
-      case_ fmt impl soln = testCase (printf fmt i) $ maybe missing ((@?= Right soln) . impl) in_
-   in [ case_ "day%02da" implA solnA, case_ "day%02db" implB solnB ]
+      case_ name impl soln = testCase name $ maybe missing ((@?= Right soln) . impl) in_
+   in [ case_ "A" implA solnA, case_ "B" implB solnB ]
