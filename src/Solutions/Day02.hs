@@ -14,7 +14,7 @@ day02b = solve valid'
 data Entry = Entry (Int, Int) Char String deriving Show
 
 solve :: (Entry -> Bool) -> NonEmpty String -> Either String Int
-solve p = traverse parse >>> maybeToRight "bad parse" .> (toList >>> filter p >>> length)
+solve p = traverse parseEntry >>> maybeToRight "bad parse" .> (toList >>> filter p >>> length)
 
 valid :: Entry -> Bool
 valid (Entry (lo, hi) char password) =
@@ -28,8 +28,8 @@ valid' (Entry (lo, hi) char password) =
     hi' <- password !!? (hi - 1)
     return (xor (lo' == char) (hi' == char))
 
-parse :: String -> Maybe Entry
-parse
+parseEntry :: String -> Maybe Entry
+parseEntry
   (break (== ':') ->
     ( break (== ' ') ->
       ( break (== '-') -> (lo, '-':hi)
@@ -39,4 +39,4 @@ parse
     )
   )
     = Entry <$> ((,) <$> readMaybe lo <*> readMaybe hi) <*> pure letter <*> pure password
-parse _ = Nothing
+parseEntry _ = Nothing

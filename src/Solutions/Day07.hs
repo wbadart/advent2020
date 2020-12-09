@@ -1,23 +1,21 @@
-{-# LANGUAGE ScopedTypeVariables,ViewPatterns #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
-module Solutions.Day07
-  ( day07a
-  , day07b
-  ) where
+module Solutions.Day07 where
+  -- ( day07a
+  -- , day07b
+  -- ) where
 
 import qualified Data.Map.Strict as M
 
-import Parse
-
 day07a :: NonEmpty String -> Either String Int
 day07a strings = do
-  bags <- maybeToRight "bad parse" $ traverse (evalParser parseBag) strings
+  bags <- maybeToRight "bad parse" $ traverse (parse parseBag) strings
   let rules = M.fromList (toList bags)
   pure $ length $ filter (reachable "shinygold" rules) $ toList $ fmap fst bags
 
 day07b :: NonEmpty String -> Either String Int
 day07b strings = do
-  bags <- maybeToRight "bad parse" $ traverse (evalParser parseBag) strings
+  bags <- maybeToRight "bad parse" $ traverse (parse parseBag) strings
   let rules = M.fromList (toList bags)
   pure $ sizeOfSubtree rules "shinygold"
 
@@ -35,21 +33,21 @@ sizeOfSubtree rules ((rules M.!?) -> Just holds) =
   + sum (M.toList holds & fmap (first (sizeOfSubtree rules) >>> uncurry (*)))
 sizeOfSubtree _ _ = 0
 
-parseBag :: Parser String Bag
+parseBag :: Parser Bag
 parseBag = (\s1 s2 m -> (s1 <> s2, m))
-  <$> word <* space <*> word
+  <$> word <* spaces <*> word
   <* string " bags contain "
   <*> parseSubBags
 
-parseSubBags :: Parser String (Map String Int)
+parseSubBags :: Parser (Map String Int)
 parseSubBags = either (const M.empty) M.fromList
   <$> (fmap Right (some parseSubBag)
   <|> fmap Left (string "no other bags."))
 
-parseSubBag :: Parser String (String, Int)
+parseSubBag :: Parser (String, Int)
 parseSubBag = (\n s1 s2 -> (s1 <> s2, n))
-  <$> number <* space
-  <*> word <* space <*> word <* space
+  <$> number <* spaces
+  <*> word <* spaces <*> word <* spaces
   <* string "bag" <* optional (string "s")
   <* (string "," <|> string ".")
-  <* optional space
+  <* optional spaces

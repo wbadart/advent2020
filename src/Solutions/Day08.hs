@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts,OverloadedStrings,ViewPatterns #-}
+{-# LANGUAGE FlexibleContexts,OverloadedStrings #-}
 
 module Solutions.Day08
   ( day08a
@@ -6,16 +6,16 @@ module Solutions.Day08
   ) where
 
 import Relude.Unsafe ( (!!) )
-import Parse
+import Text.ParserCombinators.ReadP ( ReadP, string )
 
 day08a :: NonEmpty String -> Either String Int
 day08a strings = do
-  prog <- maybeToRight "bad parse" $ traverse (evalParser parseInstr) $ toList strings
+  prog <- maybeToRight "bad parse" $ traverse (parse parseInstr) $ toList strings
   pure $ getAcc (execInterp prog)
 
 day08b :: NonEmpty String -> Either String Int
 day08b strings = do
-  prog <- maybeToRight "bad parse" $ traverse (evalParser parseInstr) $ toList strings
+  prog <- maybeToRight "bad parse" $ traverse (parse parseInstr) $ toList strings
   maybeToRight "no solution" $ viaNonEmpty head do
     pc <- getTrace (execInterp prog)
     let instr = prog !! pc
@@ -42,7 +42,7 @@ execInterp = interpret (0, 0, [])
 
 -- ==========
 
-parseInstr :: Parser String Instr
+parseInstr :: ReadP Instr
 parseInstr =
       (Acc <$> (string "acc " *> signedNumber))
   <|> (Jmp <$> (string "jmp " *> signedNumber))

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f4ae9bd4865074a570feb9e6964a6c4f248c7c0c10e34f0068ce0a846ffff0bb
+-- hash: ac7c494dcaa1983cffaf1a3f45e216e50c6160d6627e82eb688b34c998b78d78
 
 name:           advent
 version:        0.1.0.0
@@ -27,7 +27,6 @@ source-repository head
 
 library
   exposed-modules:
-      Parse
       Prelude
       Solutions
       Solutions.Day01
