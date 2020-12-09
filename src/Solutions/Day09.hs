@@ -22,7 +22,7 @@ invalid :: Int -> [Int] -> Either String Int
 invalid preambleSize = splitAt preambleSize >>> first Seq.fromList >>> go
   where
     go = \case
-      (pre@(_ :<| rest), (x:xs)) ->
+      (pre@(_ :<| rest), x:xs) ->
         if and [i + j /= x | i <- pre, j <- pre, j /= i]
            then Right x
            else go (rest |> x, xs)
