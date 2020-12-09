@@ -14,35 +14,29 @@ day08b :: NonEmpty String -> Either String Int
 day08b strings = do
   prog <- maybeToRight "bad parse" $ traverse (evalParser parseInstr) $ toList strings
   maybeToRight "no solution" $ viaNonEmpty head do
-    let finalState = execInterp prog
-    pc <- getTrace finalState
+    pc <- getTrace (execInterp prog)
     let instr = prog !! pc
     guard $ not (isAcc instr)
     let prog' = splice pc (switch instr) prog
-    let finalState' = execInterp prog'
-    guard $ getPC finalState' == length prog'
-    pure $ getAcc finalState'
+    let finalState = execInterp prog'
+    guard $ getPC finalState == length prog'
+    pure $ getAcc finalState
 
-interpret :: Program -> State ProgramState ()
-interpret prog = get >>= \(pc, _acc, visited) ->
+interpret :: ProgramState -> Program -> ProgramState
+interpret s@(pc, acc, visited) prog =
   if pc `elem` visited || pc == length prog
-     then pass
-     else do
-       execInstr prog
-       interpret prog
-
-execInstr :: MonadState ProgramState m => Program -> m ()
-execInstr prog = get >>= \(pc, acc, visited) -> do
-  let visited' = pc : visited
-  case prog !!? pc of
-    Just (Acc i) -> put (succ pc, acc + i, visited')
-    Just (Jmp i) -> put (pc + i,  acc,     visited')
-    Just (Nop _) -> put (succ pc, acc,     visited')
-    Nothing      -> error "out of program bounds"
+     then s
+     else
+       let visited' = pc : visited
+           (pc', acc') =
+             case prog !! pc of
+               Acc i -> (succ pc, acc + i)
+               Jmp i -> (pc + i,  acc)
+               Nop _ -> (succ pc, acc)
+        in interpret (pc', acc', visited') prog
 
 execInterp :: Program -> ProgramState
-execInterp = (`execState` initialState) . interpret
-  where initialState = (0, 0, [])
+execInterp = interpret (0, 0, [])
 
 
 -- ==========
