@@ -37,9 +37,7 @@ interpret s@(pc, acc, visited) prog
 execInterp :: Program -> ProgramState
 execInterp = interpret (0, 0, [])
 
-
 -- ==========
-
 
 parseInstr :: Parser String Instr
 parseInstr =
