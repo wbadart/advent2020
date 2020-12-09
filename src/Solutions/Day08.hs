@@ -42,8 +42,8 @@ execInterp = interpret (0, 0, [])
 parseInstr :: Parser String Instr
 parseInstr =
       (Acc <$> (string "acc " *> signedNumber))
-  <|> (Jmp <$> (string "jmp " *> signedNumber)
-  <|> (Nop <$> (string "nop " *> signedNumber)))
+  <|> (Jmp <$> (string "jmp " *> signedNumber))
+  <|> (Nop <$> (string "nop " *> signedNumber))
 
 data Instr = Acc Int | Jmp Int | Nop Int deriving Show
 
