@@ -37,9 +37,7 @@ sizeOfSubtree _ _ = 0
 
 parseBag :: Parser String Bag
 parseBag = (\s1 s2 m -> (s1 <> s2, m))
-  <$> word
-  <* space
-  <*> word
+  <$> word <* space <*> word
   <* string " bags contain "
   <*> parseSubBags
 
