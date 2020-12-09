@@ -23,17 +23,16 @@ day08b strings = do
     pure $ getAcc finalState
 
 interpret :: ProgramState -> Program -> ProgramState
-interpret s@(pc, acc, visited) prog =
-  if pc `elem` visited || pc == length prog
-     then s
-     else
-       let visited' = pc : visited
-           (pc', acc') =
-             case prog !! pc of
-               Acc i -> (succ pc, acc + i)
-               Jmp i -> (pc + i,  acc)
-               Nop _ -> (succ pc, acc)
-        in interpret (pc', acc', visited') prog
+interpret s@(pc, acc, visited) prog
+  | pc `elem` visited || pc == length prog = s
+  | otherwise =
+      let visited' = pc : visited
+          (pc', acc') =
+            case prog !! pc of
+              Acc i -> (succ pc, acc + i)
+              Jmp i -> (pc + i,  acc)
+              Nop _ -> (succ pc, acc)
+       in interpret (pc', acc', visited') prog
 
 execInterp :: Program -> ProgramState
 execInterp = interpret (0, 0, [])
