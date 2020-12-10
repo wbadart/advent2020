@@ -1,9 +1,9 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Solutions.Day07 where
-  -- ( day07a
-  -- , day07b
-  -- ) where
+module Solutions.Day07
+  ( day07a
+  , day07b
+  ) where
 
 import qualified Data.Map.Strict as M
 

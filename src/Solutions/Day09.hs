@@ -1,6 +1,9 @@
 {-# LANGUAGE MonadComprehensions #-}
 
-module Solutions.Day09 where
+module Solutions.Day09
+  ( day09a
+  , day09b
+  ) where
 
 import Data.Foldable ( minimum, maximum )
 import Data.Sequence ( Seq ((:<|)), (|>) )
