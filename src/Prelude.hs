@@ -3,7 +3,6 @@ module Prelude
     , module Relude.Extra
     , (...)
     , (.>)
-    , interact
     , breakAll
     , split
     , Parser
@@ -14,8 +13,6 @@ module Prelude
     , parse
     , P.satisfy, P.char, P.string
     ) where
-
-import System.IO ( getContents )
 
 import Relude
 import Relude.Extra
@@ -36,11 +33,6 @@ import Relude.Unsafe ( read )
 m .> f = fmap f . m
 
 infixr 5 .>
-
-interact :: (Text -> Text) -> IO ()
-interact f = do
-  blob <- getContents
-  putTextLn $! f (toText $! blob)
 
 -- ==========
 -- List Munging

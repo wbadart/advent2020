@@ -1,22 +1,29 @@
-{-# LANGUAGE BlockArguments,DeriveGeneric,OverloadedStrings #-}
+{-# LANGUAGE BlockArguments,DeriveAnyClass,DeriveGeneric,OverloadedStrings #-}
 
 module Main where
 
+import qualified Data.List as Old
+import qualified System.IO as Old
 import Options.Generic
+
 import Solutions
 
-data Solution = Solution
+data SolutionOpts = SolutionOpts
   { day :: Int
   , secondProb :: Bool
-  } deriving (Show, Generic)
-instance ParseRecord Solution
+  } deriving (Show, Generic, ParseRecord)
 
 main :: IO ()
 main = do
-  Solution day secondProb <- getRecord "WB Advent of Code"
-  interact
-    $ lines
-    >>> map toString
-    >>> nonEmpty
-    >>> (maybeToRight "empty input" >=> bool fst snd secondProb (solnFunc day))
-    >>> either (toText . ("ERROR " <>)) show
+  SolutionOpts day secondProb <- getRecord "WB Advent of Code"
+  let soln = pick (not secondProb) <$> solnFunc day
+  input <- Old.lines <$> Old.getContents
+  let result = do
+        f   <- soln           & maybeToRight ("no solution for day " <> show day)
+        arg <- nonEmpty input & maybeToRight "empty input"
+        f arg
+  case result of
+    Right answer -> print answer
+    Left err -> do
+      Old.hPutStrLn stderr ("ERROR: " <> err)
+      exitFailure

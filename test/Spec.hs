@@ -3,7 +3,7 @@
 import Text.Printf ( printf )
 
 import Test.Tasty ( TestTree, defaultMain, testGroup )
-import Test.Tasty.HUnit ( (@?=), assertBool, testCase )
+import Test.Tasty.HUnit ( (@?=), assertFailure, testCase )
 
 import Solutions ( solnFunc )
 
@@ -30,9 +30,11 @@ inputs upto = do
   pure ((inputLines !!?) >=> nonEmpty)
 
 testDay :: (Int -> Maybe (NonEmpty String)) -> (Int, Int, Int) -> TestTree
-testDay input (i, solnA, solnB) = testGroup (printf "Day %02d" i)
-  let (implA, implB) = solnFunc i
-      in_ = input (i - 1)
-      missing = assertBool "input file not found" False
-      case_ name impl soln = testCase name $ maybe missing ((@?= Right soln) . impl) in_
-   in [ case_ "A" implA solnA, case_ "B" implB solnB ]
+testDay input (i, solnA, solnB) =
+  let answers = do
+        (implA, implB) <- solnFunc i    & maybeToRight "imlpementation not found"
+        testInput      <- input (i - 1) & maybeToRight "input file not found"
+        return $ (implA &&& implB) testInput
+   in testGroup (printf "Day %02d" i) case answers of
+        Left err -> [ testCase "bad" (assertFailure err) ]
+        Right (a, b) -> [ testCase "A" (a @?= Right solnA), testCase "B" (b @?= Right solnB) ]
