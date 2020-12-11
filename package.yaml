@@ -28,6 +28,7 @@ library:
   - relude
   - containers
   - transformers
+  - recursion-schemes
   ghc-options:
   - -Wall
   default-extensions:

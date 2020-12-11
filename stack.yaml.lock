@@ -5,6 +5,27 @@
 
 packages:
 - completed:
+    hackage: recursion-schemes-5.2.1@sha256:ce2e11af9a799cc194d028d719e9ae00ba29782e6a162feab778f49bbe8f0eec,3697
+    pantry-tree:
+      size: 719
+      sha256: 04a2f8115371e431d5468ab40dcc7e1c5c843eaad9162fc4ad63a5e21c1cfcb0
+  original:
+    hackage: recursion-schemes-5.2.1@sha256:ce2e11af9a799cc194d028d719e9ae00ba29782e6a162feab778f49bbe8f0eec,3697
+- completed:
+    hackage: data-fix-0.3.0@sha256:058a266d1e658500e0ffb8babe68195b0ce06a081dcfc3814afc784b083fd9a5,1645
+    pantry-tree:
+      size: 261
+      sha256: 6cf43af344624e087dbe2f1e96e985de6142e85bb02db8449df6d72bee3c1013
+  original:
+    hackage: data-fix-0.3.0@sha256:058a266d1e658500e0ffb8babe68195b0ce06a081dcfc3814afc784b083fd9a5,1645
+- completed:
+    hackage: th-abstraction-0.4.0.0@sha256:91c980ebdd0310cec2fb27703c52ad6631ccf97c9d9e95056d90a5b2a3344e44,1913
+    pantry-tree:
+      size: 670
+      sha256: c44f5e5df1f261d08993d60ecb0856080768146730ca365f8d2cca15431184d5
+  original:
+    hackage: th-abstraction-0.4.0.0@sha256:91c980ebdd0310cec2fb27703c52ad6631ccf97c9d9e95056d90a5b2a3344e44,1913
+- completed:
     hackage: hie-bios-0.7.1@sha256:27b88c6f541e435a41e0c37f94fa286e78eb0065a151a1c599662e6cd0b88c80,11260
     pantry-tree:
       size: 11225

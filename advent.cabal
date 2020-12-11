@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 2d7c22125dd00a1b1e28467f646f0a0deeeaad88992ffcd32f044a76449d610a
+-- hash: 227cec902db56f9e0f5f734a4c997b274767e2abf11d7d0d858b5fca16530422
 
 name:           advent
 version:        0.1.0.0
@@ -48,6 +48,7 @@ library
   build-depends:
       base-noprelude >=4.7 && <5
     , containers
+    , recursion-schemes
     , relude
     , transformers
   default-language: Haskell2010

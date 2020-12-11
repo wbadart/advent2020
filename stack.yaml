@@ -40,6 +40,12 @@ packages:
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 #
 extra-deps:
+# recursion-schemes is on stackage, but lts-25 doesn't have 5.2.1 (with Tree)
+- recursion-schemes-5.2.1@sha256:ce2e11af9a799cc194d028d719e9ae00ba29782e6a162feab778f49bbe8f0eec,3697
+- data-fix-0.3.0@sha256:058a266d1e658500e0ffb8babe68195b0ce06a081dcfc3814afc784b083fd9a5,1645
+- th-abstraction-0.4.0.0@sha256:91c980ebdd0310cec2fb27703c52ad6631ccf97c9d9e95056d90a5b2a3344e44,1913
+
+# For ghcid
 - hie-bios-0.7.1@sha256:27b88c6f541e435a41e0c37f94fa286e78eb0065a151a1c599662e6cd0b88c80,11260
 - hie-compat-0.1.0.0@sha256:bf4c51730a9ffce50fd73a0e14d21d22720fa3cbe38fd5e4761fdce576d781ee,1339
 - implicit-hie-cradle-0.2.0.1@sha256:c6892ef9c16ba1e19f497a119c039a5845f46b93dd67538f37d4c002b222d4c1,2568
