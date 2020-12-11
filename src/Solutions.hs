@@ -12,6 +12,7 @@ import Solutions.Day07
 import Solutions.Day08
 import Solutions.Day09
 import Solutions.Day10
+import Solutions.Day11
 
 type Solution = NonEmpty String -> Either String Int
 
@@ -27,6 +28,7 @@ solnFunc = \case
   08 -> Just (day08a, day08b)
   09 -> Just (day09a, day09b)
   10 -> Just (day10a, day10b)
+  11 -> Just (day11a, day11b)
   _  -> Nothing
 
 pick :: Bool -> (a, a) -> a

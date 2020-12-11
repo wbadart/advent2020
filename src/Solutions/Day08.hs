@@ -63,6 +63,3 @@ getTrace = \case (_, _, t) -> t
 
 switch :: Instr -> Instr
 switch = \case Jmp i -> Nop i; Nop i -> Jmp i; x -> x
-
-splice :: Int -> a -> [a] -> [a]
-splice i x (splitAt i -> (lhs, _:rhs)) = lhs <> (x:rhs)

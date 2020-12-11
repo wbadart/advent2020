@@ -1,3 +1,5 @@
+{-# LANGUAGE RankNTypes #-}
+
 module Prelude
     ( module Relude
     , module Relude.Extra
@@ -5,6 +7,8 @@ module Prelude
     , (.>)
     , breakAll
     , split
+    , splice
+    , idx
     , Parser
     , number
     , signedNumber
@@ -18,6 +22,7 @@ import Relude
 import Relude.Extra
 
 import Data.Char
+import Data.List ( (!!) )
 import Text.ParserCombinators.ReadP ( ReadP, readP_to_S, char, satisfy )
 import qualified Text.ParserCombinators.ReadP as P
 import Relude.Unsafe ( read )
@@ -48,6 +53,12 @@ split d (break (== d) -> (l, r)) =
   case r of
     d':r' -> (l, if d == d' then r' else r)
     _     -> (l, r)
+
+splice :: Int -> a -> [a] -> [a]
+splice i x (splitAt i -> (lhs, _:rhs)) = lhs <> (x:rhs)
+
+idx :: Int -> Lens' [a] a
+idx i = lens (!! i) (\xs a -> splice i a xs)
 
 -- ==========
 -- Parsing
