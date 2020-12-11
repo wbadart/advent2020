@@ -73,6 +73,5 @@ applyRules (Ferry layout dim@(maxX, maxY)) = Ferry (M.mapWithKey go layout) dim
 occupied :: Status -> Bool
 occupied = \case Occupied -> True; _ -> False
 
-
 day11b :: NonEmpty String -> Either String Int
 day11b = undefined

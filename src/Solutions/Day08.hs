@@ -10,17 +10,16 @@ type ProgramState = (PC, Accumulator, [PC])
 
 day08a :: NonEmpty String -> Either String Int
 day08a strings = do
-  prog <- maybeToRight "bad parse" $ traverse (parse parseInstr) $ toList strings
+  prog <- maybeToRight "bad parse" . traverse (parse parseInstr) $ toList strings
   return (execInterp prog ^. _2)
 
 day08b :: NonEmpty String -> Either String Int
 day08b strings = do
-  prog <- maybeToRight "bad parse" $ traverse (parse parseInstr) $ toList strings
+  prog <- maybeToRight "bad parse" . traverse (parse parseInstr) $ toList strings
   maybeToRight "no solution" $ viaNonEmpty head do
     pc <- execInterp prog ^. _3
-    let instr = prog ^. idx pc
-    guard (not (isAcc instr))
-    let (pc', acc', _) = prog & idx pc .~ switch instr & execInterp
+    guard (not . isAcc $ prog ^. idx pc)
+    let (pc', acc', _) = prog & idx pc %~ switch & execInterp
     guard (pc' == length prog)
     pure acc'
 
