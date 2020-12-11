@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1430eea64f88c461add41bccb7b23fabfc4671de59ad78e8a9a45ee33d46822c
+-- hash: 0a7ba1f2b7cd2a2bba7cf63a08f6b6776fe2d45ee8c2651d814106eb0c1d3fca
 
 name:           advent
 version:        0.1.0.0
@@ -44,7 +44,7 @@ library
       Paths_advent
   hs-source-dirs:
       src
-  default-extensions: BlockArguments LambdaCase ViewPatterns
+  default-extensions: BlockArguments LambdaCase ScopedTypeVariables ViewPatterns
   ghc-options: -Wall
   build-depends:
       base-noprelude >=4.7 && <5

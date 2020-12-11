@@ -1,7 +1,6 @@
-{-# LANGUAGE ScopedTypeVariables #-}
-
 module Solutions.Day10 where
 
+import Prelude hiding ( prev )
 import Data.Tree ( Tree(..) )
 import Data.Functor.Base ( TreeF(..), NonEmptyF(..) )
 import Data.Functor.Foldable

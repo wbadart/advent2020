@@ -1,10 +1,11 @@
 module Solutions.Day11 where
 
+import Prelude hiding ( prev )
 import Data.Functor.Base ( ListF(..) )
 import Data.Functor.Foldable ( cata )
 import qualified Data.Map.Strict as M
 import qualified Relude.Unsafe as Unsafe
-import Text.Show ( Show(..) )
+import qualified Text.Show as TShow
 
 day11a :: NonEmpty String -> Either String Int
 day11a strings = do
@@ -25,13 +26,6 @@ instance Show Status where
     Occupied -> "#"
 
 data Ferry = Ferry (Map (Int, Int) Status) (Int, Int) deriving Eq
-
-f :: IO Ferry
-f = do
-  blob <- fmap toString . lines <$> readFileText "test.txt"
-  let Just f = toFerry <$> traverse (traverse parsePos) blob
-  return f
-
 instance Show Ferry where
   show (Ferry layout (dimX, dimY)) =
     let grid = replicate dimY ' ' <$ [1..dimX]
@@ -55,7 +49,7 @@ toFerry = cata \case
      in Ferry (M.union layout (M.fromList seats)) (maxX + 1, length row)
 
 applyRules :: Ferry -> Ferry
-applyRules f@(Ferry layout dim@(maxX, maxY)) = Ferry (M.mapWithKey go layout) dim
+applyRules (Ferry layout dim@(maxX, maxY)) = Ferry (M.mapWithKey go layout) dim
   where
     go p = \case
       Floor -> Floor
@@ -76,6 +70,7 @@ applyRules f@(Ferry layout dim@(maxX, maxY)) = Ferry (M.mapWithKey go layout) di
     adjacent a b = a == b || a == b + 1 || a == b - 1
     occupied' = occupied . (layout M.!)
 
+occupied :: Status -> Bool
 occupied = \case Occupied -> True; _ -> False
 
 

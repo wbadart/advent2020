@@ -1,4 +1,4 @@
-{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE FlexibleInstances,MultiParamTypeClasses,RankNTypes #-}
 
 module Prelude
     ( module Relude
@@ -9,6 +9,7 @@ module Prelude
     , split
     , splice
     , idx
+    , Field1(..), Field2(..), Field3(..)
     , Parser
     , number
     , signedNumber
@@ -59,7 +60,25 @@ splice i x (splitAt i -> (lhs, _:rhs)) = lhs <> (x:rhs)
 splice _ _ xs = xs
 
 idx :: Int -> Lens' [a] a
-idx i = lens (!! i) (\xs a -> splice i a xs)
+idx i = lens (!! i) (flip $ splice i)
+
+class Field1 s a where
+  _1 :: Lens' s a
+instance Field1 (a, b) a where
+  _1 = lens fst (\(_, b) a' -> (a', b))
+instance Field1 (a, b, c) a where
+  _1 = lens (\(a, _, _) -> a) (\(_, b, c) a' -> (a', b, c))
+class Field2 s a where
+  _2 :: Lens' s a
+instance Field2 (a, b) b where
+  _2 = lens snd (\(a, _) b' -> (a, b'))
+instance Field2 (a, b, c) b where
+  _2 = lens (\(_, b, _) -> b) (\(a, _, c) b' -> (a, b', c))
+class Field3 s a where
+  _3 :: Lens' s a
+instance Field3 (a, b, c) c where
+  _3 = lens (\(_, _, c) -> c) (\(a, b, _) c' -> (a, b, c'))
+
 
 -- ==========
 -- Parsing

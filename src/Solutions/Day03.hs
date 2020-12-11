@@ -12,7 +12,7 @@ day03b ss = Right . product $ fmap ($ toList ss)
   , solve 3
   , solve 5
   , solve 7
-  , solve 1 . mapMaybe (\(i, s) -> if even i then Just s else Nothing) . zip [0..]
+  , solve 1 . mapMaybe (\(i :: Int, s) -> if even i then Just s else Nothing) . zip [0..]
   ]
 
 go :: Int -> (Int, Int) -> String -> Maybe (Int, Int)

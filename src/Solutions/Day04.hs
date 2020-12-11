@@ -1,5 +1,3 @@
-{-# LANGUAGE ViewPatterns #-}
-
 module Solutions.Day04
   ( day04a
   , day04b
@@ -36,12 +34,10 @@ fields = (fromMaybe False .) <$> M.fromList
   , ("pid", pure . ((&&) <$> ((== 9) . length) <*> all isDigit))
   ]
   where
-    between lo hi d = d >= lo && d <= hi
+    between (lo :: Int) hi d = d >= lo && d <= hi
     checkHeight = pure ... \case
       "cm" -> between 150 193
       "in" -> between  59  76
       _    -> const False
     eyeColors = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
     tailMay = \case [] -> Nothing; (_:xs) -> Just xs
-    (...) = (.) . (.)
-    m .> f = fmap f . m

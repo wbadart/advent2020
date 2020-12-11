@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings,ViewPatterns #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Solutions.Day05
   ( day05a
@@ -13,14 +13,13 @@ day05a = traverse seatId .> maximum1 >>> maybeToRight "bad parse"
 day05b :: NonEmpty String -> Either String Int
 day05b xs = do
   ids <- maybeToRight "bad parse" (traverse seatId xs >>= nonEmpty . sort . toList)
-  let inConcecutive = evalState (traverse go ids) (prev (head ids))
-  maybeToRight "no solution"
-    $ viaNonEmpty (prev . head)
-    $ fmap fst $ filter snd
-    $ zip (toList ids) (toList inConcecutive)
-
-go :: (Eq a, Enum a) => a -> State a Bool
-go a = state \(succ -> a') -> (a /= a', a)
+  let inconcecutive = evalState (traverse isConsecutive ids) (prev (head ids))
+  zip (toList ids) (toList inconcecutive)
+    & filter snd
+    & viaNonEmpty (prev . fst . head)
+    & maybeToRight "no solution"
+  where
+    isConsecutive a = state \(succ -> a') -> (a /= a', a)
 
 seatId :: String -> Maybe Int
 seatId = splitAt 7 >>> (rowNum *** colNum) >>> uncurry (liftA2 (\r c -> r * 8 + c))

@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings,ViewPatterns #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Solutions.Day01
   ( day01a

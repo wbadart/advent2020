@@ -1,5 +1,3 @@
-{-# LANGUAGE ViewPatterns #-}
-
 module Solutions.Day02
   ( day02a
   , day02b
@@ -17,16 +15,16 @@ solve :: (Entry -> Bool) -> NonEmpty String -> Either String Int
 solve p = traverse parseEntry >>> maybeToRight "bad parse" .> (toList >>> filter p >>> length)
 
 valid :: Entry -> Bool
-valid (Entry (lo, hi) char password) =
-  let count = filter (== char) password & length
+valid (Entry (lo, hi) c password) =
+  let count = filter (== c) password & length
    in count >= lo && count <= hi
 
 valid' :: Entry -> Bool
-valid' (Entry (lo, hi) char password) =
+valid' (Entry (lo, hi) c password) =
   fromMaybe False do
     lo' <- password !!? (lo - 1)
     hi' <- password !!? (hi - 1)
-    return (xor (lo' == char) (hi' == char))
+    return (xor (lo' == c) (hi' == c))
 
 parseEntry :: String -> Maybe Entry
 parseEntry

@@ -5,25 +5,24 @@ module Solutions.Day08
   , day08b
   ) where
 
-import Relude.Unsafe ( (!!) )
-import Text.ParserCombinators.ReadP ( ReadP, string )
+data Instr = Acc Int | Jmp Int | Nop Int deriving Show
+type ProgramState = (PC, Accumulator, [PC])
 
 day08a :: NonEmpty String -> Either String Int
 day08a strings = do
   prog <- maybeToRight "bad parse" $ traverse (parse parseInstr) $ toList strings
-  pure $ getAcc (execInterp prog)
+  return (execInterp prog ^. _2)
 
 day08b :: NonEmpty String -> Either String Int
 day08b strings = do
   prog <- maybeToRight "bad parse" $ traverse (parse parseInstr) $ toList strings
   maybeToRight "no solution" $ viaNonEmpty head do
-    pc <- getTrace (execInterp prog)
-    let instr = prog !! pc
-    guard $ not (isAcc instr)
-    let prog' = splice pc (switch instr) prog
-    let finalState = execInterp prog'
-    guard $ getPC finalState == length prog'
-    pure $ getAcc finalState
+    pc <- execInterp prog ^. _3
+    let instr = prog ^. idx pc
+    guard (not (isAcc instr))
+    let (pc', acc', _) = prog & idx pc .~ switch instr & execInterp
+    guard (pc' == length prog)
+    pure acc'
 
 interpret :: ProgramState -> Program -> ProgramState
 interpret s@(pc, acc, visited) prog
@@ -31,7 +30,7 @@ interpret s@(pc, acc, visited) prog
   | otherwise =
       let visited' = pc : visited
           (pc', acc') =
-            case prog !! pc of
+            case prog ^. idx pc of
               Acc i -> (succ pc, acc + i)
               Jmp i -> (pc + i,  acc)
               Nop _ -> (succ pc, acc)
@@ -42,13 +41,11 @@ execInterp = interpret (0, 0, [])
 
 -- ==========
 
-parseInstr :: ReadP Instr
+parseInstr :: Parser Instr
 parseInstr =
       (Acc <$> (string "acc " *> signedNumber))
   <|> (Jmp <$> (string "jmp " *> signedNumber))
   <|> (Nop <$> (string "nop " *> signedNumber))
-
-data Instr = Acc Int | Jmp Int | Nop Int deriving Show
 
 isAcc :: Instr -> Bool
 isAcc = \case Acc _ -> True; _ -> False
@@ -56,10 +53,6 @@ isAcc = \case Acc _ -> True; _ -> False
 type Program = [Instr]
 type PC = Int
 type Accumulator = Int
-type ProgramState = (PC, Accumulator, [PC])
-getPC = \case (p, _, _) -> p
-getAcc = \case (_, a, _) -> a
-getTrace = \case (_, _, t) -> t
 
 switch :: Instr -> Instr
 switch = \case Jmp i -> Nop i; Nop i -> Jmp i; x -> x

@@ -35,6 +35,6 @@ weakness :: ([Int], Either String Int) -> Either String Int
 weakness = \case
   (_, Left e) -> Left e
   (xs, Right w) -> maybeToRight "no solution" $ viaNonEmpty head do
-    set <- foldMap tails (inits xs)
-    guard (not (null set) && sum set == w)
-    return (minimum set + maximum set)
+    candidates <- foldMap tails (inits xs)
+    guard (sum candidates == w)
+    return (minimum candidates + maximum candidates)

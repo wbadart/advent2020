@@ -1,5 +1,3 @@
-{-# LANGUAGE ScopedTypeVariables #-}
-
 module Solutions.Day07
   ( day07a
   , day07b
