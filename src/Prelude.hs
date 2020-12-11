@@ -56,6 +56,7 @@ split d (break (== d) -> (l, r)) =
 
 splice :: Int -> a -> [a] -> [a]
 splice i x (splitAt i -> (lhs, _:rhs)) = lhs <> (x:rhs)
+splice _ _ xs = xs
 
 idx :: Int -> Lens' [a] a
 idx i = lens (!! i) (\xs a -> splice i a xs)

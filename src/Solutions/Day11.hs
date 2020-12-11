@@ -34,14 +34,11 @@ f = do
 
 instance Show Ferry where
   show (Ferry layout (dimX, dimY)) =
-    let grid = const (replicate dimY ' ') <$> [1..dimX]
-     in toString $ unlines $ reverse $ fmap toText $ M.foldlWithKey' go grid layout
+    let grid = replicate dimY ' ' <$ [1..dimX]
+     in toString $ unlines $ reverse (toText <$> M.foldlWithKey' go grid layout)
     where
       go :: [[Char]] -> (Int, Int) -> Status -> [[Char]]
-      go grid (x, y) (Unsafe.head . Prelude.show -> status) =
-        let row = grid ^. idx x
-            row' = set (idx y) status row
-         in set (idx x) row' grid
+      go grid (x, y) (Unsafe.head . Prelude.show -> status) = grid & idx x %~ (idx y .~ status)
 
 parsePos :: Char -> Maybe Status
 parsePos = \case
@@ -63,7 +60,7 @@ applyRules f@(Ferry layout dim@(maxX, maxY)) = Ferry (M.mapWithKey go layout) di
     go p = \case
       Floor -> Floor
       Empty ->
-        if (not . occupied') `all` (neighbors p)
+        if not (any occupied' (neighbors p))
            then Occupied
            else Empty
       Occupied ->
@@ -71,8 +68,10 @@ applyRules f@(Ferry layout dim@(maxX, maxY)) = Ferry (M.mapWithKey go layout) di
            then Empty
            else Occupied
     neighbors (x, y) =
-      [ (x', y') | x' <- [0..maxX - 1], y' <- [0..maxY - 1]
-      , adjacent x' x, adjacent y' y, (x, y) /= (x', y')
+      [ (x', y')
+      | x' <- [0..maxX - 1] , adjacent x' x
+      , y' <- [0..maxY - 1] , adjacent y' y
+      , (x, y) /= (x', y')
       ]
     adjacent a b = a == b || a == b + 1 || a == b - 1
     occupied' = occupied . (layout M.!)
