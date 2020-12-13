@@ -21,6 +21,7 @@ main = do
         , (09, 104_054_607,    13_935_797)
         , (10,       1_890,     undefined)
         , (11,       2_289,     undefined)
+        , (12,         364,     undefined)
         ]
   input <- inputs (length tests)
   defaultMain $ testGroup "Advent of Code" (testDay input <$> tests)

@@ -15,11 +15,11 @@ data SolutionOpts = SolutionOpts
 
 main :: IO ()
 main = do
-  SolutionOpts day secondProb <- getRecord "WB Advent of Code"
-  let soln = pick (not secondProb) <$> solnFunc day
+  SolutionOpts dayNum doSecond <- getRecord "WB Advent of Code"
+  let soln = pick (not doSecond) <$> solnFunc dayNum
   input <- Old.lines <$> Old.getContents
   let result = do
-        f   <- soln           & maybeToRight ("no solution for day " <> show day)
+        f   <- soln           & maybeToRight ("no solution for day " <> show dayNum)
         arg <- nonEmpty input & maybeToRight "empty input"
         f arg
   case result of

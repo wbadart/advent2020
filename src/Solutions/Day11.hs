@@ -2,7 +2,6 @@
 
 module Solutions.Day11 where
 
-import Prelude hiding ( prev )
 import Data.Functor.Base ( ListF(..) )
 import Data.Functor.Foldable ( cata )
 import qualified Data.Map.Strict as M
