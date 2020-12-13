@@ -1,3 +1,5 @@
+{-# LANGUAGE RankNTypes #-}
+
 module Solutions.Day11 where
 
 import Prelude hiding ( prev )
@@ -10,13 +12,42 @@ import qualified Text.Show as TShow
 day11a :: NonEmpty String -> Either String Int
 day11a strings = do
   statuses <- traverse (traverse parsePos) strings & maybeToRight "bad parse"
-  let evolution = iterate applyRules $ toFerry (toList statuses)
-      withPrev = zip evolution (Unsafe.tail evolution)
-  fmap (length . filter occupied) $ maybeToRight "no solution" $ viaNonEmpty head do
-    (prev, f@(Ferry layout _)) <- withPrev
-    if prev == f
-       then return (M.elems layout)
-       else []
+  let evolution = iterate (applyRules 4 neighborsAdj) (toFerry $ toList statuses)
+  zip evolution (Unsafe.tail evolution)
+    & filter (uncurry (==))
+    & viaNonEmpty (count occupied . M.elems . getLayout . fst . head)
+    & maybeToRight "no solution"
+
+day11b :: NonEmpty String -> Either String Int
+day11b = undefined
+
+applyRules :: Int -> ((Int, Int) -> (Int, Int) -> [(Int, Int)]) ->Ferry -> Ferry
+applyRules tol neighbors (Ferry layout dim) = Ferry (M.mapWithKey go layout) dim
+  where
+    go p = \case
+      Floor -> Floor
+      Empty ->
+        if not (any occupied' $ neighbors' p)
+           then Occupied
+           else Empty
+      Occupied ->
+        if count occupied' (neighbors' p) >= tol
+           then Empty
+           else Occupied
+    occupied' = occupied . (layout M.!)
+    neighbors' = neighbors dim
+
+neighborsAdj :: (Int, Int) -> (Int, Int) -> [(Int, Int)]
+neighborsAdj (maxX, maxY) (x, y) =
+  [ (x', y')
+  | x' <- [0..maxX - 1], adjacent x' x
+  , y' <- [0..maxY - 1], adjacent y' y
+  , (x, y) /= (x', y')
+  ]
+  where adjacent a b = a == b || abs (a - b) == 1
+
+occupied :: Status -> Bool
+occupied = \case Occupied -> True; _ -> False
 
 data Status = Floor | Empty | Occupied deriving Eq
 instance Show Status where
@@ -24,22 +55,21 @@ instance Show Status where
     Floor -> "."
     Empty -> "L"
     Occupied -> "#"
-
-data Ferry = Ferry (Map (Int, Int) Status) (Int, Int) deriving Eq
-instance Show Ferry where
-  show (Ferry layout (dimX, dimY)) =
-    let grid = replicate dimY ' ' <$ [1..dimX]
-     in toString $ unlines $ reverse (toText <$> M.foldlWithKey' go grid layout)
-    where
-      go :: [[Char]] -> (Int, Int) -> Status -> [[Char]]
-      go grid (x, y) (Unsafe.head . Prelude.show -> status) = grid & idx x %~ (idx y .~ status)
-
 parsePos :: Char -> Maybe Status
 parsePos = \case
   '.' -> Just Floor
   'L' -> Just Empty
   '#' -> Just Occupied
   _   -> Nothing
+
+data Ferry = Ferry { getLayout :: (Map (Int, Int) Status), getDim :: (Int, Int) } deriving Eq
+instance Show Ferry where
+  show (Ferry layout (dimX, dimY)) =
+    let grid = replicate dimY ' ' <$ [1..dimX]
+     in toString . unlines $ reverse (toText <$> M.foldlWithKey' go grid layout)
+    where
+      go :: [[Char]] -> (Int, Int) -> Status -> [[Char]]
+      go grid (x, y) (Unsafe.head . Prelude.show -> status) = grid & ix x . ix y .~ status
 
 toFerry :: [[Status]] -> Ferry
 toFerry = cata \case
@@ -48,30 +78,8 @@ toFerry = cata \case
     let seats = zip [(maxX, j) | j <- [0..]] row
      in Ferry (M.union layout (M.fromList seats)) (maxX + 1, length row)
 
-applyRules :: Ferry -> Ferry
-applyRules (Ferry layout dim@(maxX, maxY)) = Ferry (M.mapWithKey go layout) dim
-  where
-    go p = \case
-      Floor -> Floor
-      Empty ->
-        if not (any occupied' (neighbors p))
-           then Occupied
-           else Empty
-      Occupied ->
-        if length (filter occupied' (neighbors p)) >= 4
-           then Empty
-           else Occupied
-    neighbors (x, y) =
-      [ (x', y')
-      | x' <- [0..maxX - 1] , adjacent x' x
-      , y' <- [0..maxY - 1] , adjacent y' y
-      , (x, y) /= (x', y')
-      ]
-    adjacent a b = a == b || a == b + 1 || a == b - 1
-    occupied' = occupied . (layout M.!)
-
-occupied :: Status -> Bool
-occupied = \case Occupied -> True; _ -> False
-
-day11b :: NonEmpty String -> Either String Int
-day11b = undefined
+-- neighborsVisible :: Ferry -> (Int, Int) -> [(Int, Int)]
+-- neighborsVisible (Ferry layout (maxX, maxY)) (x, y) = do
+--   x' <- [0..maxX - 1]
+--   y' <- [0..maxY - 1]
+--   _

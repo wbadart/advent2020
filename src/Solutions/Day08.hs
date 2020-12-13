@@ -5,6 +5,8 @@ module Solutions.Day08
   , day08b
   ) where
 
+import Data.List ( (!!) )
+
 data Instr = Acc Int | Jmp Int | Nop Int deriving Show
 type ProgramState = (PC, Accumulator, [PC])
 
@@ -18,8 +20,8 @@ day08b strings = do
   prog <- maybeToRight "bad parse" . traverse (parse parseInstr) $ toList strings
   maybeToRight "no solution" $ viaNonEmpty head do
     pc <- execInterp prog ^. _3
-    guard (not . isAcc $ prog ^. idx pc)
-    let (pc', acc', _) = prog & idx pc %~ switch & execInterp
+    guard (not . isAcc $ prog !! pc)
+    let (pc', acc', _) = prog & ix pc %~ switch & execInterp
     guard (pc' == length prog)
     pure acc'
 
@@ -29,7 +31,7 @@ interpret s@(pc, acc, visited) prog
   | otherwise =
       let visited' = pc : visited
           (pc', acc') =
-            case prog ^. idx pc of
+            case prog !! pc of
               Acc i -> (succ pc, acc + i)
               Jmp i -> (pc + i,  acc)
               Nop _ -> (succ pc, acc)

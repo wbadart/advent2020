@@ -16,8 +16,8 @@ solve p = traverse parseEntry >>> maybeToRight "bad parse" .> (toList >>> filter
 
 valid :: Entry -> Bool
 valid (Entry (lo, hi) c password) =
-  let count = filter (== c) password & length
-   in count >= lo && count <= hi
+  let n = count (== c) password
+   in n >= lo && n <= hi
 
 valid' :: Entry -> Bool
 valid' (Entry (lo, hi) c password) =

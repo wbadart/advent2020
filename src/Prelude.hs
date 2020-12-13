@@ -2,28 +2,31 @@
 
 module Prelude
     ( module Relude
-    , module Relude.Extra
+    , module Relude.Extra.Foldable1
+    , module Relude.Extra.Tuple
+    , module Lens.Micro
     , (...)
     , (.>)
     , breakAll
     , split
     , splice
-    , idx
-    , Field1(..), Field2(..), Field3(..)
+    , count
     , Parser
     , number
     , signedNumber
     , word
     , spaces
+    , getChar
     , parse
     , P.satisfy, P.char, P.string
     ) where
 
 import Relude
-import Relude.Extra
+import Relude.Extra.Foldable1
+import Relude.Extra.Tuple
+import Lens.Micro
 
 import Data.Char
-import Data.List ( (!!) )
 import Text.ParserCombinators.ReadP ( ReadP, readP_to_S, char, satisfy )
 import qualified Text.ParserCombinators.ReadP as P
 import Relude.Unsafe ( read )
@@ -55,29 +58,12 @@ split d (break (== d) -> (l, r)) =
     d':r' -> (l, if d == d' then r' else r)
     _     -> (l, r)
 
+count :: (a -> Bool) -> [a] -> Int
+count = length ... filter
+
 splice :: Int -> a -> [a] -> [a]
 splice i x (splitAt i -> (lhs, _:rhs)) = lhs <> (x:rhs)
 splice _ _ xs = xs
-
-idx :: Int -> Lens' [a] a
-idx i = lens (!! i) (flip $ splice i)
-
-class Field1 s a where
-  _1 :: Lens' s a
-instance Field1 (a, b) a where
-  _1 = lens fst (\(_, b) a' -> (a', b))
-instance Field1 (a, b, c) a where
-  _1 = lens (\(a, _, _) -> a) (\(_, b, c) a' -> (a', b, c))
-class Field2 s a where
-  _2 :: Lens' s a
-instance Field2 (a, b) b where
-  _2 = lens snd (\(a, _) b' -> (a, b'))
-instance Field2 (a, b, c) b where
-  _2 = lens (\(_, b, _) -> b) (\(a, _, c) b' -> (a, b', c))
-class Field3 s a where
-  _3 :: Lens' s a
-instance Field3 (a, b, c) c where
-  _3 = lens (\(_, _, c) -> c) (\(a, b, _) c' -> (a, b, c'))
 
 
 -- ==========
@@ -100,3 +86,6 @@ word = some (satisfy isAlpha)
 
 spaces :: Parser String
 spaces = some (satisfy isSpace)
+
+getChar :: Parser Char
+getChar = P.get

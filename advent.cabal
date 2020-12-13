@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0a7ba1f2b7cd2a2bba7cf63a08f6b6776fe2d45ee8c2651d814106eb0c1d3fca
+-- hash: 54f8e9bfea33e3ad1420971158d688951d1cc3dc9a37e16275064a5bc95e72c0
 
 name:           advent
 version:        0.1.0.0
@@ -49,6 +49,7 @@ library
   build-depends:
       base-noprelude >=4.7 && <5
     , containers
+    , microlens
     , recursion-schemes
     , relude
     , transformers

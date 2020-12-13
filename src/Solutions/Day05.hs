@@ -13,10 +13,10 @@ day05a = traverse seatId .> maximum1 >>> maybeToRight "bad parse"
 day05b :: NonEmpty String -> Either String Int
 day05b xs = do
   ids <- maybeToRight "bad parse" (traverse seatId xs >>= nonEmpty . sort . toList)
-  let inconcecutive = evalState (traverse isConsecutive ids) (prev (head ids))
+  let inconcecutive = evalState (traverse isConsecutive ids) (pred $ head ids)
   zip (toList ids) (toList inconcecutive)
     & filter snd
-    & viaNonEmpty (prev . fst . head)
+    & viaNonEmpty (pred . fst . head)
     & maybeToRight "no solution"
   where
     isConsecutive a = state \(succ -> a') -> (a /= a', a)

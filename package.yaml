@@ -29,6 +29,7 @@ library:
   - containers
   - transformers
   - recursion-schemes
+  - microlens
   ghc-options:
   - -Wall
   default-extensions:
